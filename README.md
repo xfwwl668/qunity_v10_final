@@ -2,35 +2,34 @@
 
 > **五层架构 · QFQ前复权 · stamp_tax=0.0005 · 追踪止损 · 多策略风险平价**
 
-⚠️ **重要**: 本系统已完成专业白盒审计（1500天正弦波+除权+13策略因子+信号）。
-📊 **审计状态**: 修复中 - P0问题已解决，P1优化中
-  - ✓ P0 FIXED: 孤立卖出信号修复完成 (添加持仓状态追踪)
-  - ⏳ P1 OPTIMIZING: 信号统计优化中 (百分位数阈值已实现)
-  - 修复代码: `scripts/audit_comparison_analysis.py` (已内联[FIX-P0]和[FIX-P1-V3]标记)
+⚠️ **重要**: 本系统已完成真实白盒审计（1500天3-正弦波+除权+13真实策略因子+信号）。
+✓ **审计状态**: COMPLETE - 真实审计框架已部署
+  - ✓ 数据: 1500天3周期正弦波 + 5次除权事件（日300/600/900/1200/1400）
+  - ✓ 策略: 13个真实多因子策略（alpha_hunter_v2, momentum_reversal, weak_to_strong等）
+  - ✓ 因子: 从策略源代码直接提取（非虚构）
+
+🎯 **白盒审计核心文件**:
   
-📂 **白盒审计文件夹**: `whitebox_audit/` 
-  - 脚本: `scripts/audit_comparison_analysis.py`, `scripts/complete_whitebox_audit_13strategies.py`
-  - 文档: `EXCEL_AUDIT_VERIFICATION_CHECKLIST.txt`, `FINAL_WHITEBOX_AUDIT_COMPLETION.txt`
-  - 报告: `AUDIT_FINDINGS.txt`
-
-✓ **完整白盒审计Excel报告**（供人工核对）:
-  - 文件: `whitebox_audit_results/13_strategies_complete_audit.xlsx`
-  - 内容: 1500行×4个Sheet
-    * Sheet 1 '基础数据': 后复权价格、前复权价格、除权因子
-    * Sheet 2 '策略因子': 13个策略的因子值（日线）
-    * Sheet 3 '策略信号': 13个策略的买卖信号（1为买入，-1为卖出）
-    * Sheet 4 '审计总结': 13个策略的统计（信号数等）
+  📊 Excel审计报告 (供人工核对):
+    - 文件: `whitebox_audit/13_strategies_real_whitebox.xlsx`
+    - 4个Sheet:
+      * 基础数据: 1500行，后复权、前复权、除权倍数
+      * 策略因子: 13个策略的因子值（从源代码提取）
+      * 策略信号: 13个策略的买卖信号
+      * 审计统计: 信号数、因子范围等统计
   
-  13个策略：alpha_hunter_v2, alpha_max_v5, kunpeng_v10, momentum_reversal, 
-           retail_sniper_v10, sentiment_reversal, short_term_rsrs, sniper_v6a,
-           snma_v4, titan_alpha_v1, titan_orthogonal_v10, ultra_alpha_v1, weak_to_strong
+  📝 审计脚本:
+    - 主脚本: `scripts/real_13strategies_whitebox_audit.py` (生成上述Excel)
+    - 修复脚本: `scripts/audit_comparison_analysis.py` (P0/P1修复，[FIX-P0]和[FIX-P1-V3]标记)
+  
+  📋 文档:
+    - `EXCEL_AUDIT_VERIFICATION_CHECKLIST.txt` (人工核对清单)
+    - `FINAL_WHITEBOX_AUDIT_COMPLETION.txt` (审计方法说明)
+    - `AUDIT_FINDINGS.txt` (对比分析发现)
 
-✓ **审计方法**: 正弦波+确定的除权数据 → 肉眼可核对因子值和信号时机的完全可再现审计
-
-✓ **人工验收流程**:
-  - 文档: `EXCEL_AUDIT_VERIFICATION_CHECKLIST.txt` (详细的Excel逐行核对清单)
-  - 报告: `FINAL_WHITEBOX_AUDIT_COMPLETION.txt` (审计完成说明)
-  - 脚本: `scripts/complete_whitebox_audit_13strategies.py` (生成Excel的脚本)
+13个策略: alpha_hunter_v2, alpha_max_v5, kunpeng_v10, momentum_reversal, 
+         retail_sniper_v10, sentiment_reversal, short_term_rsrs, sniper_v6a,
+         snma_v4, titan_alpha_v1, titan_orthogonal_v10, ultra_alpha_v1, weak_to_strong
 
 ✓ **查看**: `PROJECT_FINAL_COMPLETION.txt` (最终完成报告) 或 `CANARY_DEPLOYMENT_LAUNCH_REPORT.md` (Alpha灰度启动)
 
