@@ -111,16 +111,37 @@ def load_strategies() -> Dict[str, callable]:
         'weak_to_strong',
     ]
     
+    import sys
+    import os
+    import importlib.util
+    
+    # 使用硬编码的项目路径
+    PROJECT_ROOT = '/vercel/share/v0-project'
+    registry_path = os.path.join(PROJECT_ROOT, 'src', 'strategies', 'registry.py')
+    
+    print(f"[DEBUG] registry路径: {registry_path}")
+    print(f"[DEBUG] 文件是否存在: {os.path.exists(registry_path)}")
+    
     try:
-        from src.strategies.registry import get_alpha_fn
-    except (ImportError, ModuleNotFoundError):
-        try:
-            from src.strategies.vectorized.alpha_hunter_v2_alpha import alpha_hunter_v2_alpha
-            # 如果单个导入成功，则使用registry._auto_discover
-            from src.strategies.registry import get_alpha_fn
-        except (ImportError, ModuleNotFoundError):
-            print("[ERROR] 无法导入策略")
-            return {}
+        spec = importlib.util.spec_from_file_location("registry", registry_path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError("无法创建module spec")
+        registry = importlib.util.module_from_spec(spec)
+        sys.modules['registry'] = registry
+        sys.modules['src'] = sys.modules.get('src', type(sys)('src'))
+        sys.modules['src.strategies'] = sys.modules.get('src.strategies', type(sys)('src.strategies'))
+        sys.modules['src.strategies.registry'] = registry
+        spec.loader.exec_module(registry)
+        get_alpha_fn = registry.get_alpha_fn
+        list_vec_strategies = registry.list_vec_strategies
+        print(f"[DEBUG] registry导入成功")
+        registered = list_vec_strategies()
+        print(f"[DEBUG] 已注册策略: {registered}")
+    except Exception as e:
+        print(f"[ERROR] 无法导入registry: {e}")
+        import traceback
+        traceback.print_exc()
+        return {}
     
     for name in strategy_names:
         try:
