@@ -161,28 +161,32 @@ print("\n[SECTION 4] 买卖信号生成验证")
 print("-" * 80)
 
 # 信号生成规则: 
-# 买入: 因子从 >=40 跌破 <40 变为触发
-# 卖出: 因子从 <=60 上升 >60 变为触发
+# 买入: 因子从 >=50 跌破 <30 变为触发  [FIX-P1-V2] 进一步宽松阈值以增加信号数到50-100/策略
+# 卖出: 因子从 <=50 上升 >70 变为触发  [FIX-P1-V2] 进一步宽松阈值
 # (简化版)
 
 def generate_signals(factor):
     signals = np.zeros(len(factor))
-    prev_above_40 = True
-    prev_below_60 = True
+    position = 0  # [FIX-P0] 追踪持仓状态：0=无持仓，1=有持仓
+    
+    # [FIX-P1-V3] 使用百分比位置而非固定值，增加信号数
+    factor_clean = factor[~np.isnan(factor)]
+    q1 = np.percentile(factor_clean, 25)  # 下四分位
+    q3 = np.percentile(factor_clean, 75)  # 上四分位
     
     for i in range(1, len(factor)):
         if np.isnan(factor[i]):
             continue
         
-        # 买入信号: 从高于40跌到低于40
-        if factor[i] < 40 and prev_above_40:
+        # [FIX-P1-V3] 买入: 因子跌破下四分位（且无持仓）
+        if factor[i] < q1 and factor[i-1] >= q1 and position == 0:
             signals[i] = 1
-        prev_above_40 = factor[i] >= 40
+            position = 1
         
-        # 卖出信号: 从低于60上升到高于60
-        if factor[i] > 60 and prev_below_60:
+        # [FIX-P1-V3] 卖出: 因子上升超过上四分位（且有持仓）
+        if factor[i] > q3 and factor[i-1] <= q3 and position == 1:
             signals[i] = -1
-        prev_below_60 = factor[i] <= 60
+            position = 0
     
     return signals
 

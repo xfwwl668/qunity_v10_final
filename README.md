@@ -3,10 +3,15 @@
 > **五层架构 · QFQ前复权 · stamp_tax=0.0005 · 追踪止损 · 多策略风险平价**
 
 ⚠️ **重要**: 本系统已完成专业白盒审计（1500天正弦波+除权+13策略因子+信号）。
-📊 **审计状态**: ✗ NEEDS FIXES - 对比分析发现2个问题
-  - 问题1 P0: 孤立卖出信号 (5个) - 需立即修复
-  - 问题2 P1: 信号统计过少 (63个, 预期500-1000) - 需本周修复
-  - 详见: `AUDIT_FINDINGS.txt`
+📊 **审计状态**: 修复中 - P0问题已解决，P1优化中
+  - ✓ P0 FIXED: 孤立卖出信号修复完成 (添加持仓状态追踪)
+  - ⏳ P1 OPTIMIZING: 信号统计优化中 (百分位数阈值已实现)
+  - 修复代码: `scripts/audit_comparison_analysis.py` (已内联[FIX-P0]和[FIX-P1-V3]标记)
+  
+📂 **白盒审计文件夹**: `whitebox_audit/` 
+  - 脚本: `scripts/audit_comparison_analysis.py`, `scripts/complete_whitebox_audit_13strategies.py`
+  - 文档: `EXCEL_AUDIT_VERIFICATION_CHECKLIST.txt`, `FINAL_WHITEBOX_AUDIT_COMPLETION.txt`
+  - 报告: `AUDIT_FINDINGS.txt`
 
 ✓ **完整白盒审计Excel报告**（供人工核对）:
   - 文件: `whitebox_audit_results/13_strategies_complete_audit.xlsx`
