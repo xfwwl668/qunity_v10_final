@@ -19,6 +19,11 @@
 
 ✓ **审计方法**: 正弦波+确定的除权数据 → 肉眼可核对因子值和信号时机的完全可再现审计
 
+✓ **人工验收流程**:
+  - 文档: `EXCEL_AUDIT_VERIFICATION_CHECKLIST.txt` (详细的Excel逐行核对清单)
+  - 报告: `FINAL_WHITEBOX_AUDIT_COMPLETION.txt` (审计完成说明)
+  - 脚本: `scripts/complete_whitebox_audit_13strategies.py` (生成Excel的脚本)
+
 ✓ **查看**: `PROJECT_FINAL_COMPLETION.txt` (最终完成报告) 或 `CANARY_DEPLOYMENT_LAUNCH_REPORT.md` (Alpha灰度启动)
 
 ## 快速开始
