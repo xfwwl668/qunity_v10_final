@@ -1,0 +1,35 @@
+======================================================================
+  Q-UNITY V10 全策略非交互式回测
+======================================================================
+
+[1/4] 加载数据矩阵...
+  数据加载完成 (0.1s)
+[2/4] Numba JIT 预热...
+  JIT 完成 (0.4s)
+
+[3/4] 已注册策略 (10): ['alpha_hunter_v2', 'alpha_max_v5', 'kunpeng_v10', 'momentum_reversal', 'sentiment_reversal', 'short_term_rsrs', 'snma_v4', 'titan_alpha_v1', 'ultra_alpha_v1', 'weak_to_strong']
+
+======================================================================
+  单策略回测  [2019-01-02 ~ 2026-03-25]
+======================================================================
+
+  策略                              年化收益       夏普       最大回撤      换手率       耗时
+  ───────────────────────────────────────────────────────────────────────────
+Traceback (most recent call last):
+  File "H:\python_antigravity\QUNITY_V10_R5_FIXED_v10\qunity_v10_final\run_all_backtest.py", line 78, in <module>
+    res = runner.run(name, params_obj, START, END)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\python_antigravity\QUNITY_V10_R5_FIXED_v10\qunity_v10_final\src\engine\fast_runner_v10.py", line 894, in run
+    result_tup = gen_fn(**kw)
+                 ^^^^^^^^^^^^
+  File "H:\python_antigravity\QUNITY_V10_R5_FIXED_v10\qunity_v10_final\src\strategies\vectorized\alpha_hunter_v2_alpha.py", line 176, in alpha_hunter_v2_alpha
+    beta_mat, r2_mat = _rsrs_beta_r2(high, low, window=rsrs_w)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\python_antigravity\QUNITY_V10_R5_FIXED_v10\qunity_v10_final\src\strategies\vectorized\alpha_hunter_v2_alpha.py", line 68, in _rsrs_beta_r2
+    sxy = (dx * dy).sum(axis=1)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "G:\Users\PC862\AppData\Local\Programs\Python\Python312\Lib\site-packages\numpy\core\_methods.py", line 47, in _sum
+    def _sum(a, axis=None, dtype=None, out=None, keepdims=False,
+    
+KeyboardInterrupt
+^C
