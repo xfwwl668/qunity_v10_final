@@ -27,6 +27,11 @@
   - `02_strategy_factors.csv` - 策略因子采样（13个策略）
   - `03_audit_summary.csv` - 审计统计
 
+📊 **数据生成工具** (whitebox_audit/):
+  - `gen_data.py` - 快速生成01_base_data.csv (30秒)
+  - `output_csv_content.py` - 输出CSV内容到stdout
+  - `DATA_README.txt` - 数据说明和生成方法
+
 13个策略: alpha_hunter_v2, alpha_max_v5, kunpeng_v10, momentum_reversal, 
          retail_sniper_v10, sentiment_reversal, short_term_rsrs, sniper_v6a,
          snma_v4, titan_alpha_v1, titan_orthogonal_v10, ultra_alpha_v1, weak_to_strong
@@ -34,10 +39,19 @@
 执行审计:
   ```bash
   cd whitebox_audit
-  python scripts/whitebox_audit_real.py  # 生成完整数据 (5分钟)
+  
+  # 方式1: 快速生成基础数据CSV
+  python gen_data.py  # 生成 01_base_data.csv (30秒)
+  
+  # 方式2: 完整审计（包含13策略因子提取）
+  python scripts/whitebox_audit_real.py  # 生成完整审计报告 (5分钟)
+  
+  # 方式3: 快速验证
+  python scripts/whitebox_final.py  # 快速验证脚本 (10秒)
   ```
 
 📌 **现在就开始**: 打开 `whitebox_audit/01_START_HERE.txt` ← 5分钟快速入门
+📌 **查看数据说明**: 打开 `whitebox_audit/DATA_README.txt` ← 数据规格说明
 
 ✓ **查看**: `WHITEBOX_AUDIT_ORGANIZED.txt` (文件夹组织说明) 或 `PROJECT_FINAL_COMPLETION.txt` (最终完成报告)
 
