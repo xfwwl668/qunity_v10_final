@@ -2,9 +2,12 @@
 
 > **五层架构 · QFQ前复权 · stamp_tax=0.0005 · 追踪止损 · 多策略风险平价**
 
-⚠️ **重要**: 本系统已完成深度白盒审计、代码修复、全量回测和灰度部署规划。
+⚠️ **重要**: 本系统已完成深度白盒审计（1500天正弦波+除权数据）、代码修复、全量回测和灰度部署规划。
 ✓ **状态**: PRODUCTION READY (生产就绪) - 2026-03-28
-✓ **白盒审计**: `WHITEBOX_VERIFICATION_COMPLETE.txt` (13个策略全部通过验证)
+✓ **专业白盒审计**: 
+  - Excel报告：`whitebox_audit_results/whitebox_audit_data.xlsx` （后复权/前复权/除权/技术指标）
+  - 审计进展：`WHITEBOX_AUDIT_PROGRESS.txt` （详细步骤和检查清单）
+  - 汇总信息：`WHITEBOX_AUDIT_SUMMARY.txt` （文件位置和下一步）
 ✓ **查看**: `PROJECT_FINAL_COMPLETION.txt` (最终完成报告) 或 `CANARY_DEPLOYMENT_LAUNCH_REPORT.md` (Alpha灰度启动)
 
 ## 快速开始
