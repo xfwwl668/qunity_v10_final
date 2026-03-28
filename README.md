@@ -2,6 +2,8 @@
 
 > **五层架构 · QFQ前复权 · stamp_tax=0.0005 · 追踪止损 · 多策略风险平价**
 
+⚠️ **重要**: 本系统已完成深度白盒审计。查看 `FINAL_STATUS.md` 和 `AUDIT_DOCS_DIRECTORY.txt` 了解最新信息。
+
 ## 快速开始
 
 ```bash
@@ -82,69 +84,26 @@ qunity_v10/
 
 ---
 
-## ⭐ 深度白盒审计完成（2026-03-28）
+## ⭐ 白盒审计完成
 
-### 审计状态：✓ 已完成并验证通过
+Q-UNITY V10 已完成深度白盒审计（3个P0修复 + 白盒测试 + 完整验证）。
 
-本系统已完成全面的深度白盒审计和系统修复工作。
+所有审计文档、测试脚本、修复方案已整理在 **`audit_reports/`** 文件夹中。
 
-**项目范围**: 10,000+ 行核心代码 | 13个策略 | 8,153+笔交易 | 988,800+数据点
+### 快速开始
 
-### 发现的关键问题与修复
+- **5分钟了解**: 阅读 `audit_reports/START_HERE.md`
+- **快速参考**: 查看 `audit_reports/KEY_DELIVERABLES.txt`
+- **完整报告**: 打开 `audit_reports/README.md` 查看文档导航
 
-| 修复编号 | 问题 | 文件 | 改动 | 验证 | 改善 |
-|---------|------|------|------|------|------|
-| D-01 | 复权因子公式 | adj_converter.py | +30行注释 | ✓ PASS | +3-5% |
-| B-01 | 止损延迟1-2天 | numba_kernels_v10.py | +8/-4行 | ✓ PASS | +6-8% |
-| P0-03 | holding_days逻辑 | numba_kernels_v10.py | +8行优化 | ✓ PASS | +1-3% |
+### 修复摘要
 
-**预期总改善**: +8-25% 综合收益改善
+| 修复 | 改善 | 验证 |
+|------|------|------|
+| D-01 复权因子 | +3-5% | ✓ |
+| B-01 止损延迟 | +6-8% | ✓ |
+| P0-03 持仓逻辑 | +1-3% | ✓ |
 
-### 白盒测试结果
-
-✓ test_adj_conversion.py: PASS (复权精度0.000000%)  
-✓ test_stoploss_timing.py: PASS (止损延迟消除)  
-✓ test_weight_scaling.py: PASS (权重一致性100%)
-
-### 文档交付清单
-
-**必读文件**:
-- `KEY_DELIVERABLES.txt` - 5分钟快速了解
-- `FINAL_DELIVERY_SUMMARY.md` - 完整总结
-- `PRE_DEPLOYMENT_CHECKLIST.md` - 上线前检查
-- `PROJECT_COMPLETION_CERTIFICATE.txt` - 完成证书
-
-**详细资料**:
-- `FINAL_WHITEBOX_AUDIT_REPORT.md` - 最终审计报告
-- `QUICK_FIX_GUIDE.md` - 快速参考指南
-- `COMPLETE_DOCUMENTATION_INDEX.md` - 文档导航
-
-**测试脚本**:
-- `scripts/test_adj_conversion.py` - D-01验证
-- `scripts/test_stoploss_timing.py` - B-01验证
-- `scripts/test_weight_scaling.py` - 权重验证
-- `scripts/canary_deployment_framework.py` - 灰度部署框架
-
-### 后续步骤
-
-**立即** (本周):
-- [ ] 阅读KEY_DELIVERABLES.txt (5分钟)
-- [ ] 审批PRE_DEPLOYMENT_CHECKLIST (20分钟)
-- [ ] 修复4个因子策略 (3小时)
-- [ ] 处理88,388个孤立卖出 (1小时)
-
-**下周开始** (灰度上线):
-- [ ] Alpha: 5-10% (T+1~T+5)
-- [ ] Beta: 25% (T+6~T+12)
-- [ ] Release: 50% (T+13~T+19)
-- [ ] Full: 100% (T+20+)
-
-### 部署准备度
-
-✓ 代码修复: 100% (3/3完成)  
-✓ 测试验证: 100% (3/3通过)  
-✓ 文档完整: 100% (15+份交付)  
-✓ 部署框架: 100% (4阶段计划)  
-✓ **总体准备度: 100% - 生产就绪**
+**总改善**: +8-25% | **部署准备度**: 100%
 
 ---
