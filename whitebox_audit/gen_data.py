@@ -42,6 +42,13 @@ print("=== 基础数据 (前10行) ===")
 print(df_base.head(10).to_string(index=False))
 print(f"\n总行数: {len(df_base)}")
 
+# 获取完整CSV内容
+csv_content = df_base.to_csv(index=False)
+
+# 输出CSV内容到stdout供保存
+print("\n=== 完整CSV内容 ===")
+print(csv_content)
+
 # 同时写到文件
 import sys
 import os
@@ -49,4 +56,4 @@ sys.path.insert(0, '/vercel/share/v0-project')
 os.makedirs('/vercel/share/v0-project/whitebox_audit', exist_ok=True)
 output_path = '/vercel/share/v0-project/whitebox_audit/01_base_data.csv'
 df_base.to_csv(output_path, index=False)
-print(f"\n已写入: {output_path}")
+print(f"\n已写入文件: {output_path}")
