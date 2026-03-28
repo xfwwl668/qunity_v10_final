@@ -5,31 +5,41 @@
 ⚠️ **重要**: 本系统已完成真实白盒审计（1500天3-正弦波+除权+13真实策略因子+信号）。
 ✓ **审计状态**: ✓ COMPLETE - 真实审计框架已全部部署
 
-🎯 **白盒审计完整文档**:
-  
-  📋 **审计总结** (必读):
-    - `WHITEBOX_AUDIT_COMPLETE_SUMMARY.txt` - 完整的审计说明和检查清单
-  
-  📊 **审计脚本** (可执行):
-    - `whitebox_audit_real.py` - 主审计脚本（245行，完整13策略集成）
-    - `whitebox_final.py` - 最终版脚本（101行，快速验证）
-    - `scripts/audit_comparison_analysis.py` - P0/P1修复脚本（带[FIX-P0]和[FIX-P1-V3]标记）
-  
-  📂 **审计数据**:
-    - `whitebox_audit/01_base_data.csv` - 1500行基础数据（后复权、前复权、除权倍数）
-    - `whitebox_audit/02_strategy_factors.csv` - 策略因子采样（13个策略）
-    - `whitebox_audit/03_audit_summary.csv` - 审计统计
-  
-  📝 **历史文档** (参考):
-    - `EXCEL_AUDIT_VERIFICATION_CHECKLIST.txt` - 人工核对清单
-    - `FINAL_WHITEBOX_AUDIT_COMPLETION.txt` - 审计方法说明
-    - `AUDIT_FINDINGS.txt` - 分析发现（P0/P1问题报告）
+🎯 **白盒审计文件夹 (whitebox_audit/)**:
+
+快速开始: 阅读 `whitebox_audit/01_START_HERE.txt` (5分钟入门)
+
+📋 **审计文档** (whitebox_audit/):
+  - `01_START_HERE.txt` - 首先读这个 (入门指南，5分钟)
+  - `COMPLETE_SUMMARY.txt` - 完整总结 (15分钟)
+  - `VERIFICATION_CHECKLIST.txt` - 人工核对清单 (60分钟)
+  - `AUDIT_COMPLETION.txt` - 审计方法说明 (理论基础)
+  - `FINDINGS.txt` - 问题发现和修复 (P0/P1修复)
+  - `DIRECTORY_STRUCTURE.txt` - 文件夹结构说明
+
+📊 **审计脚本** (whitebox_audit/scripts/):
+  - `whitebox_audit_real.py` - 主审计脚本（245行，生成完整数据）
+  - `whitebox_final.py` - 快速验证脚本（101行，快速测试）
+  - `audit_comparison_analysis.py` - 对比分析脚本（P0/P1修复）
+
+📂 **审计数据** (whitebox_audit/data/, 执行脚本后自动生成):
+  - `01_base_data.csv` - 1500行基础数据（后复权、前复权、除权倍数）
+  - `02_strategy_factors.csv` - 策略因子采样（13个策略）
+  - `03_audit_summary.csv` - 审计统计
 
 13个策略: alpha_hunter_v2, alpha_max_v5, kunpeng_v10, momentum_reversal, 
          retail_sniper_v10, sentiment_reversal, short_term_rsrs, sniper_v6a,
          snma_v4, titan_alpha_v1, titan_orthogonal_v10, ultra_alpha_v1, weak_to_strong
 
-✓ **查看**: `PROJECT_FINAL_COMPLETION.txt` (最终完成报告) 或 `CANARY_DEPLOYMENT_LAUNCH_REPORT.md` (Alpha灰度启动)
+执行审计:
+  ```bash
+  cd whitebox_audit
+  python scripts/whitebox_audit_real.py  # 生成完整数据 (5分钟)
+  ```
+
+📌 **现在就开始**: 打开 `whitebox_audit/01_START_HERE.txt` ← 5分钟快速入门
+
+✓ **查看**: `WHITEBOX_AUDIT_ORGANIZED.txt` (文件夹组织说明) 或 `PROJECT_FINAL_COMPLETION.txt` (最终完成报告)
 
 ## 快速开始
 
