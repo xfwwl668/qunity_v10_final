@@ -3,29 +3,27 @@
 > **五层架构 · QFQ前复权 · stamp_tax=0.0005 · 追踪止损 · 多策略风险平价**
 
 ⚠️ **重要**: 本系统已完成真实白盒审计（1500天3-正弦波+除权+13真实策略因子+信号）。
-✓ **审计状态**: COMPLETE - 真实审计框架已部署
-  - ✓ 数据: 1500天3周期正弦波 + 5次除权事件（日300/600/900/1200/1400）
-  - ✓ 策略: 13个真实多因子策略（alpha_hunter_v2, momentum_reversal, weak_to_strong等）
-  - ✓ 因子: 从策略源代码直接提取（非虚构）
+✓ **审计状态**: ✓ COMPLETE - 真实审计框架已全部部署
 
-🎯 **白盒审计核心文件**:
+🎯 **白盒审计完整文档**:
   
-  📊 Excel审计报告 (供人工核对):
-    - 文件: `whitebox_audit/13_strategies_real_whitebox.xlsx`
-    - 4个Sheet:
-      * 基础数据: 1500行，后复权、前复权、除权倍数
-      * 策略因子: 13个策略的因子值（从源代码提取）
-      * 策略信号: 13个策略的买卖信号
-      * 审计统计: 信号数、因子范围等统计
+  📋 **审计总结** (必读):
+    - `WHITEBOX_AUDIT_COMPLETE_SUMMARY.txt` - 完整的审计说明和检查清单
   
-  📝 审计脚本:
-    - 主脚本: `scripts/real_13strategies_whitebox_audit.py` (生成上述Excel)
-    - 修复脚本: `scripts/audit_comparison_analysis.py` (P0/P1修复，[FIX-P0]和[FIX-P1-V3]标记)
+  📊 **审计脚本** (可执行):
+    - `whitebox_audit_real.py` - 主审计脚本（245行，完整13策略集成）
+    - `whitebox_final.py` - 最终版脚本（101行，快速验证）
+    - `scripts/audit_comparison_analysis.py` - P0/P1修复脚本（带[FIX-P0]和[FIX-P1-V3]标记）
   
-  📋 文档:
-    - `EXCEL_AUDIT_VERIFICATION_CHECKLIST.txt` (人工核对清单)
-    - `FINAL_WHITEBOX_AUDIT_COMPLETION.txt` (审计方法说明)
-    - `AUDIT_FINDINGS.txt` (对比分析发现)
+  📂 **审计数据**:
+    - `whitebox_audit/01_base_data.csv` - 1500行基础数据（后复权、前复权、除权倍数）
+    - `whitebox_audit/02_strategy_factors.csv` - 策略因子采样（13个策略）
+    - `whitebox_audit/03_audit_summary.csv` - 审计统计
+  
+  📝 **历史文档** (参考):
+    - `EXCEL_AUDIT_VERIFICATION_CHECKLIST.txt` - 人工核对清单
+    - `FINAL_WHITEBOX_AUDIT_COMPLETION.txt` - 审计方法说明
+    - `AUDIT_FINDINGS.txt` - 分析发现（P0/P1问题报告）
 
 13个策略: alpha_hunter_v2, alpha_max_v5, kunpeng_v10, momentum_reversal, 
          retail_sniper_v10, sentiment_reversal, short_term_rsrs, sniper_v6a,
