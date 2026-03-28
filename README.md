@@ -2,12 +2,23 @@
 
 > **五层架构 · QFQ前复权 · stamp_tax=0.0005 · 追踪止损 · 多策略风险平价**
 
-⚠️ **重要**: 本系统已完成深度白盒审计（1500天正弦波+除权数据）、代码修复、全量回测和灰度部署规划。
+⚠️ **重要**: 本系统已完成专业白盒审计（1500天正弦波+除权+13策略因子+信号）、代码修复、全量回测和灰度部署规划。
 ✓ **状态**: PRODUCTION READY (生产就绪) - 2026-03-28
-✓ **专业白盒审计**: 
-  - Excel报告：`whitebox_audit_results/whitebox_audit_data.xlsx` （后复权/前复权/除权/技术指标）
-  - 审计进展：`WHITEBOX_AUDIT_PROGRESS.txt` （详细步骤和检查清单）
-  - 汇总信息：`WHITEBOX_AUDIT_SUMMARY.txt` （文件位置和下一步）
+
+✓ **完整白盒审计Excel报告**（供人工核对）:
+  - 文件: `whitebox_audit_results/13_strategies_complete_audit.xlsx`
+  - 内容: 1500行×4个Sheet
+    * Sheet 1 '基础数据': 后复权价格、前复权价格、除权因子
+    * Sheet 2 '策略因子': 13个策略的因子值（日线）
+    * Sheet 3 '策略信号': 13个策略的买卖信号（1为买入，-1为卖出）
+    * Sheet 4 '审计总结': 13个策略的统计（信号数等）
+  
+  13个策略：alpha_hunter_v2, alpha_max_v5, kunpeng_v10, momentum_reversal, 
+           retail_sniper_v10, sentiment_reversal, short_term_rsrs, sniper_v6a,
+           snma_v4, titan_alpha_v1, titan_orthogonal_v10, ultra_alpha_v1, weak_to_strong
+
+✓ **审计方法**: 正弦波+确定的除权数据 → 肉眼可核对因子值和信号时机的完全可再现审计
+
 ✓ **查看**: `PROJECT_FINAL_COMPLETION.txt` (最终完成报告) 或 `CANARY_DEPLOYMENT_LAUNCH_REPORT.md` (Alpha灰度启动)
 
 ## 快速开始
