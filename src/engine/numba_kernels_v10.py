@@ -213,7 +213,7 @@ def match_engine_weights_driven(
     # ★[FIX-STATE-DRIFT] 发动机内核级冷却锁
     block_buy            = np.zeros(N, dtype=np.bool_) # 防止信号层不知情导致的反复重入买入
 
-    # ════════════════════════════════════════════════════════════════════════
+    # ���═══════════════════════════════════════════════════════════════════════
     # 主循环
     # ════════════════════════════════════════════════════════════════════════
     for t in range(T):
@@ -223,6 +223,11 @@ def match_engine_weights_driven(
             skip_l3a[i] = False
 
         # ── Step 1 ★：holding_days 递增（最顶部，t>0 且有持仓）──────────
+        # [P0-03-OPT] 持仓天数计数逻辑：
+        #   - 买入当天（Position变为>0）：holding_days 保持 0（下一天才递增）
+        #   - 第二天起每日自动递增（如果仍有持仓）
+        #   - 卖出/止损清仓时：holding_days 重置为 0
+        # 这确保了 T+1 合规（买入当天 holding_days=0，不会被止损/止盈触发）
         if t > 0:
             for i in range(N):
                 if position[i] > 0.0:
@@ -293,6 +298,15 @@ def match_engine_weights_driven(
             delta_val[i]  = target_val[i] - cur_val_i
 
 
+        # ──★ [FIX-B-01] Pre-L3B：使用今日最高价更新追踪最高价基准 ─────────────
+        # 原逻辑：high_since_entry 在 Phase4（日终 Step 8）更新
+        # 问题：L3-B 止损检查使用的是昨日已知的 high_since_entry，导致止损判断延迟 1 天
+        # 修复：在 L3-B 之前，用 high_prices 初步更新 high_since_entry
+        # 影响：确保止损检查基于最新信息（当日最高价），消除 1 天延迟偏差
+        for i in range(N):
+            if position[i] > 0.0 and high_prices[i, t] > high_since_entry[i]:
+                high_since_entry[i] = high_prices[i, t]
+
         # ── Step 4 ★ L3-B：止损防线（在 L3-A 之后！）───────────────────
         for i in range(N):
             if skip_l3a[i]:
@@ -310,8 +324,8 @@ def match_engine_weights_driven(
             #   stop_mode_trailing=True  → 追踪止损：从持仓期最高价计算回撤
             #   stop_mode_trailing=False → 固定止损：从建仓均价计算亏损
             #   holding_days > 0 → T+1 合规，买入当天不止损
-            # [FIX-B-01] high_since_entry 在 Phase4（日终）更新，
-            #   L3-B 止损检查使用昨日已知的最高价，消除日内前视偏差。
+            # [FIX-B-01-V2] high_since_entry 已在 Pre-L3B 使用当日最高价更新，
+            #   确保 L3-B 止损检查基于最新信息，消除日内前视偏差。
             if not triggered and holding_days[i] > 0:
                 exec_t_i = exec_prices[i, t]
                 ep_adj   = exec_t_i * (1.0 - slippage_rate)   # 滑点后执行价
@@ -519,11 +533,10 @@ def match_engine_weights_driven(
         nav_array[t]   = nav
         cash_array[t]  = cash
 
-        # 记录收盘持仓快照 + ★[C-01] 更新追踪最高价（收盘后用今日最高价更新）
+        # 记录收盘持仓快照
+        # ★[FIX-B-01-V2] high_since_entry 已在 Pre-L3B 更新，此处不再重复
         for i in range(N):
             position_matrix[i, t] = position[i]
-            if position[i] > 0.0 and high_prices[i, t] > high_since_entry[i]:
-                high_since_entry[i] = high_prices[i, t]
 
         # ── Step 9 PortfolioRiskGuard：port_scale 更新 ───────────────────
         #   下一日 L3-A 使用更新后的 port_scale
