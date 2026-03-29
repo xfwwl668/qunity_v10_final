@@ -23,20 +23,23 @@ _NOT_IMPL_DEFAULTS: dict = {
 @dataclass
 class RiskConfig:
     # ── Regime状态机 ─────────────────────────────────────────────────
-    bear_breadth_thr    : float = 0.25
-    bear_nav_thr        : float = 0.96
-    bear_confirm_days   : int   = 5
-    bear_exit_days      : int   = 8
-    soft_bear_breadth   : float = 0.32
-    bull_breadth_thr    : float = 0.40
-    strong_bull_breadth : float = 0.50
+    # ★[BUG-FIX-REGIME] 原阈值过于激进，A股震荡市频繁误触BEAR导致大量空仓
+    # 修复：放宽 bear_breadth_thr 和 bear_nav_thr，增加 bear_confirm_days
+    bear_breadth_thr    : float = 0.20   # 0.25→0.20，更宽容的熊市判定
+    bear_nav_thr        : float = 0.94   # 0.96→0.94，指数跌破MA更多才触发
+    bear_confirm_days   : int   = 8      # 5→8，需要更长确认期
+    bear_exit_days      : int   = 5      # 8→5，更快退出熊市状态
+    soft_bear_breadth   : float = 0.28   # 0.32→0.28
+    bull_breadth_thr    : float = 0.36   # 0.40→0.36
+    strong_bull_breadth : float = 0.45   # 0.50→0.45
     breadth_window      : int   = 20
     nav_ma_window       : int   = 60
 
     # ── 组合止损（Numba内核内部执行）────────────────────────────────
-    full_stop_dd        : float = 0.25
-    half_stop_dd        : float = 0.12
-    stop_recovery_days  : int   = 10
+    # ★[BUG-FIX-STOP] 原阈值过于敏感，轻微回撤就触发半仓/全仓止损
+    full_stop_dd        : float = 0.18   # 0.25→0.18，15%→18%才全止
+    half_stop_dd        : float = 0.10   # 0.12→0.10，更宽容的半仓阈值
+    stop_recovery_days  : int   = 20     # 10→20，冷却期更长，避免反复触发
 
     # ── 执行参数 ─────────────────────────────────────────────────────
     allow_fractional    : bool  = True

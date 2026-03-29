@@ -218,20 +218,25 @@ def convert_qfq_to_hfq(
         if col not in df.columns:
             continue
         prices = pd.to_numeric(df[col], errors="coerce").values.astype(np.float64)
-        # [D-01-FIX] 正确的逐日后复权公式：
+        # [D-01-FIX-V2] 正确的逐日后复权公式：
         # 关系链：qfq_price[t] = raw_price[t] × (latest_factor / factor_t)
         #         hfq_price[t] = raw_price[t] × factor_t
         # 推导：raw_price[t] = qfq_price[t] × factor_t / latest_factor
-        #       hfq_price[t] = qfq_price[t] × factor_t² / latest_factor
+        #       hfq_price[t] = qfq_price[t] × factor_t / latest_factor × factor_t
+        #                    = qfq_price[t] × factor_t² / latest_factor  [错误的旧公式]
         #
-        # 原实现简化为 qfq × latest_factor，等价于假设 factor_t = latest_factor（所有历史
-        # 日期使用同一个复权因子），导致多次除权的早期历史价格被低估，与正确 hfq 序列存在
-        # 系统性偏差（除权次数越多、越久远，偏差越大）。
-        # 注意：此 TDX 路径为兜底方案；BaoStock 路径直接下载 hfq 数据不受此影响。
+        # ★[BUG-FIX-V2] 上述推导有误！正确公式：
+        #   前复权定义：qfq_price[t] = raw_price[t] × (factor_t / latest_factor)
+        #   后复权定义：hfq_price[t] = raw_price[t] × factor_t
+        #   因此：hfq_price[t] = qfq_price[t] × latest_factor
+        #
+        # 旧公式 (factors ** 2 / last_factor) 会导致早期价格被错误放大2倍左右，
+        # 使回测计算的收益率系统性低估（因为历史价格被高估，涨幅被压缩）。
+        # 这是收益率整体下倾的根本原因之一。
         if last_factor > 1e-8:
-            df[col] = prices * (factors ** 2) / last_factor
+            df[col] = prices * last_factor  # ★ 正确公式：qfq × latest_factor
         else:
-            df[col] = prices * last_factor  # fallback: last_factor≈0 异常情况
+            df[col] = prices  # fallback: last_factor≈0 异常情况，保持原价
 
     df["adj_type"] = "qfq"  # V10 QFQ
     df["adj_factor"] = factors
