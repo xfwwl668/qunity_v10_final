@@ -229,22 +229,32 @@ def match_engine_weights_driven(
                     holding_days[i] += 1
 
         # ── Step 2 Phase0：连续零成交量退市检测 ──────────────────────────
+        # ★[FIX-SUSPEND] 修复停牌股票过度清仓问题
         for i in range(N):
             if volume[i, t] == 0.0:
                 consec_zero_vol[i] += 1
             else:
                 consec_zero_vol[i] = 0
 
-            if consec_zero_vol[i] > 60 and position[i] > 0.0:
-                # 以 10% 残值强制清仓
-                residual_price = exec_prices[i, t] * 0.10
+            # 改进：延长判定期至90天（从60天）+ 提高残值至20%（从10%）
+            # 理由：A股停牌可能是重大资产重组，不应低价清仓
+            if consec_zero_vol[i] > 90 and position[i] > 0.0:
+                # ★[FIX-SUSPEND] 使用最近有效收盘价而非当日执行价（可能为0）
+                last_valid_price = close_prices[i, min(t, close_prices.shape[1] - 1)]
+                for k in range(t - 1, max(0, t - 30), -1):
+                    if close_prices[i, k] > 0.0:
+                        last_valid_price = close_prices[i, k]
+                        break
+                
+                # 以最近价格的20%残值处理（从10%提高）
+                residual_price = last_valid_price * 0.20
                 if residual_price > 0.0:
                     cash += position[i] * residual_price
                 position[i]        = 0.0
                 entry_price[i]     = 0.0
-                high_since_entry[i] = 0.0   # ★[C-01]
+                high_since_entry[i] = 0.0
                 holding_days[i]    = 0
-                skip_l3a[i]        = True   # 该股本日跳过 L3-A/L3-B
+                skip_l3a[i]        = True  # 该股本日跳过 L3-A/L3-B
 
         # ── Step 3 ★ L3-A：估值 + delta_val 计算 ─────────────────────────
         #   必须在 L3-B（止损）之前！
@@ -271,17 +281,12 @@ def match_engine_weights_driven(
             
             # ★[FIX-STATE-DRIFT] 如果策略层的目标权重已经归零，解除针对该股票的买入冷却锁
             # [FIX-AUDIT-V16] 修复策略僵尸锁定：增加自动重试逻辑。
-            # 如果 stop_recovery_days > 0，且该股已持仓天数为0且当前信号仍为买入，
-            # 到达冷却天数后自动解锁，防止长趋势下因波动止损导致的永久锁死。
-            if w <= 1e-8 or (stop_recovery_days > 0 and holding_days[i] == 0 and block_buy[i]):
-                # 这里我们复用 stop_recovery_days 的逻辑，或者简单地只要信号归零就解锁
-                if w <= 1e-8:
-                    block_buy[i] = False
-                elif stop_recovery_days > 0:
-                    # 如果信号一直不归零，且我们正在冷却。
-                    # 由于没有独立的冷却计数器，我们暂且采取更开放的策略：
-                    # 只要信号还在，且止损已经过去（holding_days=0且已经清仓），
-                    # 我们允许策略再次根据其权重信号进行买入尝试，除非是在全仓冷却期。
+            # 改进：加入时间自动解锁 + 权重解锁的双重机制，防止长趋势下永久踏空
+            if w <= 1e-8:
+                block_buy[i] = False
+            elif stop_recovery_days > 0 and holding_days[i] > 0:
+                # 当前无持仓（已清仓）且超过冷却期 → 自动解锁，允许策略重新入场
+                if holding_days[i] >= stop_recovery_days:
                     block_buy[i] = False
                 
             # 当股票处于冷却锁状态时，强制目标仓位为0（引擎在此股票跌出榜单前绝不二次买入）
@@ -431,7 +436,7 @@ def match_engine_weights_driven(
                 high_since_entry[i] = 0.0   # ★[C-01] 清仓后重置追踪最高价
                 holding_days[i] = 0
 
-        # ── Step 7 Pass2：买入 ───────────────────────────────────────────
+        # ── Step 7 Pass2：买入 ─────────────────────────────────��─────────
         # [FIX-BUG-A] 原 cash * 0.95 硬编码5%缓冲，导致全仓策略实际只建95%仓位。
         # 修复：使用全部现金减去1元安全余量防止浮点精度透支。
         # WP-11安全检验（total_c > available_cash）仍然有效，不会真正透支。
