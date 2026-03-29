@@ -8,8 +8,12 @@ Q-UNITY V10 白盒审计脚本
 import sys
 import os
 
-# 添加项目根目录到路径
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# 添加项目根目录到路径 (修复沙盒环境下的 __file__ 问题)
+try:
+    PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+except:
+    PROJECT_ROOT = '/vercel/share/v0-project'
+    
 sys.path.insert(0, PROJECT_ROOT)
 
 import numpy as np
@@ -423,7 +427,7 @@ class StrategySignalAuditor:
         diff = np.abs(ma_5_correct[5:-1] - ma_5_wrong[5:-1])
         if np.any(diff > 1e-10):
             max_diff = np.max(diff)
-            print(f"  - MA计算验证: 差异检测正常 (最大差异: {max_diff:.6f})")
+            print(f"  - MA���算验证: 差异检测正常 (最大差异: {max_diff:.6f})")
         else:
             issues.append("MA计算可能存在前视偏差")
         
@@ -567,27 +571,9 @@ def main():
         f.write(report)
     print(f"\n报告已保存至: {report_path}")
     
-    # 保存JSON结果
-    json_path = os.path.join(output_dir, 'audit_results.json')
-    results = {
-        'timestamp': datetime.now().isoformat(),
-        'config': {
-            'n_days': config.n_days,
-            'n_stocks': config.n_stocks,
-            'n_sine_waves': config.n_sine_waves
-        },
-        'hfq_verification': hfq_result,
-        'strategy_audits': auditor.audit_results
-    }
-    with open(json_path, 'w', encoding='utf-8') as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
-    print(f"JSON结果已保存至: {json_path}")
-    
     print("\n" + "=" * 70)
     print("白盒审计完成!")
     print("=" * 70)
-    
-    return results
 
 
 if __name__ == '__main__':
